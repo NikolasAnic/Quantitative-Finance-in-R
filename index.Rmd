@@ -1,6 +1,6 @@
 --- 
-title: "YOUR TITLE HERE"
-author: "YOUR NAME HERE"
+title: "Quantitative Finance in R"
+author: "Nikolas Anic"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 ---

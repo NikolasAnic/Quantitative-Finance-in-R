@@ -5,5 +5,73 @@ date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 ---
 
-# Down the rabbit-hole
+# Introduction
+
+This markdown file serves as consortium for subjects on **Quantitative Finance in R**. The theory, application as well as examples are taken from numerous publicly available resources, with the main emphasis of the book being on the wonderful book  **Statistics and Data Analysis for Financial Engineering** facilitated by David Ruppert and David S. Matteson from Cornell University, which is [https://link.springer.com/book/10.1007/978-1-4939-2614-5#about](available on Springer Texts in Statistics), as well as on Robert H. Shunway and David S. Stoffer's work on **Time Series Analysis and Its Applications**, also available [https://link.springer.com/book/10.1007/978-3-319-52452-8](on the Springer Statistics page). The book serves as interactive integration of their work and others, whereas it is the emphasis to combine theory and code in an even more direct fashion. As such, it should be regarded as addition to the original textbooks and the materials covered therein. Throughout, examples provided may be enhanced or changed, which will be indicated accordingly. Especially, there will be a deviation with regards to the data obtained, as we will mainly focus on Swiss Market data for the examples provided. 
+
+## General structure 
+
+In essence, this book should provide a practical guide to financial econometrics by using the programming language R. Throughout, we will cover common (and also rather specialized) topics of financial markets that are part of the daily business within the financial industry. The cover will range from risk and return characteristics of common securities and bond-like instruments, the descriptive analysis of financial data, modeling uni- and multivariate distributions, performing re-sampling strategies and a thorough discussion on copulas. Based on the first part, we then consider statistical analysis and forecasting methods in the form of regressions and work with time series data under the assumptions of constant as well as varying volatility, before diving into linear filtering and co-integration topics on time series. Based on the univariate analysis, we take a step forward and analyze portfolio definitions as well as constructions, derive famous models from the baseline portfolio construction principles (such as the CAPM or Factor Models) and use these models to create more elaborate investment structures. Having focused on the investment process, we continue by deriving ideas on financial, credit and market-based risk management which are common in quantitative risk management practices. We conclude by focusing on statistical properties which do not depend on the assumptions of parametric models and introduce both non-parametric models, general linear models as well as Bayesian models to account for data structures. 
+
+The structure implies the following: 
+
+- In chapter 1, we cover two baseline subjects required to work within the field of empirical financial applications. The first topic covers the application environment. Therein, we cover the structure and use of the R Markdown file, on which we will write all of the subjects covered during the Lab sessions. We offer a discussion as how to create a markdown file, what makes these files so special in empirical research, how to organise and shuffle them as well as their connectivity to latex. Especially, we will consider how to write functions, how to add text-based outputs, how to construct and use coding cells as well as how to render the files.
+
+- In chapter 2, we will pThe first topic covers mathematical and statistical properties that most modern finance is built upon. These properties serve as cornerstones required to comprehend the foundations of financial economics, risk management as well as asset management. ALthough widely used in many areas, their comprehension is key in identifying and retracing financial concepts in any of the afore-mentioned areas. In this chapter, we will cover the mathematical foundations and statistical properties that are often used within empirical finance contexts. Based upon the topics taught in Statistics and Mathematics courses as well as Empirical Methods, we will cover properties related to  
+Probability Theory and Matrix Algebra. This section should serve as a repetition to the topics already discusses in baseline topics on statistics and econometrics and as such students should at least be familiar with the subjects at hand. However, as the course will rely substantially on these properties, a coherent discussion of them is a necessary prerequisite to be able to expect the baselines of empirical finance.
+
+- In chapter 3, we focus on Risk and Return, one of the fundamental aspects of asset pricing. Therein, we cover the theoretical aspect behind portfolio theory, what risk metrics are, how to use performance measures, as well as how to visualise asset returns over time. Besides presenting application steps using pre-defined functions, we also cover how to calculate the metrics considered manually using matrix algebra to enhance your understanding of the respective empirical steps.
+
+## Notation
+
+Throughout the chapters, we will follow an identical notation structure to the common terms in statistical analysis. These conventions are:
+
+- Lowercase letters, e.g., a and b, are used for nonrandom scalars.
+- Lowercase boldface letters of the Roman or Greek alphabet, e.g., $\textbf{a}$ or $\mathbf{\omega}$ are used for nonrandom vectors.
+- Uppercase letters, e.g., X and Y , are used for random variables.
+- Uppercase bold letters either early in the Roman alphabet or in Greek
+without a “hat,” e.g., $\textbf{A}$ or $\mathbf{\Omega}$, are used for nonrandom matrices.
+- A hat over a parameter or vector, e.g. $\hat{\omega}$ or $\mathbf{\hat{\omega}}$ denotes an estimator of the corresponding parameter or parameter vector.
+- $\mathbf{I}$ denotes the identity matrix with dimension appropriate for the context.
+- $diag(d_1, \dots, d_p)$ denotes the diagonal matrix with elements of $d_1, \dots, d_p$.
+- log(x) is the natural logarithm of x
+- E(X) is the expected value of a random variable X.
+- Var(X) and $\sigma_x^2$ are used to denote the variance of a random variable X.
+- Cov(X,Y) and $\sigma_{xy}$ are used to denote the covariance between the random variables X and Y.
+- Corr(X,Y) and $\rho_{xy}$ are used to denote the correlation between the random variables X and Y. 
+- A Greek letter denotes a parameter. 
+- A boldface Greek letter denotes a vector of parameters.
+- If A is some statement, then I{A} is called the indicator function of A and is equal to 1 if A is true and equal to 0 if A is false.
+- If $f_1$ and $f_2$ are two functions of a variable x, then: 
+
+$$
+f_1(x) \sim f_2(x) \text{ as } x \rightarrow x_0
+$$
+
+implies: 
+
+$$
+\lim_{x \rightarrow x_0} \frac{f_1(x)}{f_2(x)} = 1
+$$
+
+Vectors are column vectors and transposed vectors are rows: 
+
+$$
+\textbf{x} =
+\begin{pmatrix}
+x_1 \\ \dots \\ x_n
+\end{pmatrix}
+$$
+
+and
+
+$$
+\textbf{x}^T =
+\begin{pmatrix}
+x_1 & \dots & x_n
+\end{pmatrix}
+$$
+
+- $|\textbf{A}|$ is the determinant of a square matrix $\textbf{A}$.
+- $tr(\textbf{A})$ is the trace (sum of the diagonal elements) of a square matrix $\textbf{A}$.
 

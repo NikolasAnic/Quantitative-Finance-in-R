@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 3 Resampling Distributions | Quantitative Finance in R</title>
+  <meta name="description" content="Chapter 3 Resampling Distributions | Quantitative Finance in R" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 3 Resampling Distributions | Quantitative Finance in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 3 Resampling Distributions | Quantitative Finance in R" />
+  
+  
+  
+
+<meta name="author" content="Nikolas Anic" />
+
+
+<meta name="date" content="2022-02-24" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="statistical-properties.html"/>
+<link rel="next" href="inductive-statistics-and-regression-analysis-fundamentals.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<link href="libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<script src="libs/bootbox-4.4.0/bootbox.min.js"></script>
+<script src="libs/idb-keyvalue-3.2.0/idb-keyval-iife-compat.min.js"></script>
+<link href="libs/tutorial-0.10.1/tutorial.css" rel="stylesheet" />
+<script src="libs/tutorial-0.10.1/tutorial.js"></script>
+<script src="libs/tutorial-autocompletion-0.10.1/tutorial-autocompletion.js"></script>
+<script src="libs/tutorial-diagnostics-0.10.1/tutorial-diagnostics.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">quant_finance_r</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#general-structure"><i class="fa fa-check"></i><b>1.1</b> General structure</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#notation"><i class="fa fa-check"></i><b>1.2</b> Notation</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="statistical-properties.html"><a href="statistical-properties.html"><i class="fa fa-check"></i><b>2</b> Statistical Properties</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="statistical-properties.html"><a href="statistical-properties.html#introduction-to-probability"><i class="fa fa-check"></i><b>2.1</b> Introduction to Probability</a></li>
+<li class="chapter" data-level="2.2" data-path="statistical-properties.html"><a href="statistical-properties.html#the-concept-of-probability-important-notions-and-definitions"><i class="fa fa-check"></i><b>2.2</b> The concept of Probability: Important Notions and Definitions</a></li>
+<li class="chapter" data-level="2.3" data-path="statistical-properties.html"><a href="statistical-properties.html#random-variables"><i class="fa fa-check"></i><b>2.3</b> Random Variables</a></li>
+<li class="chapter" data-level="2.4" data-path="statistical-properties.html"><a href="statistical-properties.html#univariate-probability-distributions"><i class="fa fa-check"></i><b>2.4</b> Univariate Probability Distributions</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="statistical-properties.html"><a href="statistical-properties.html#discrete-random-variables-and-distributions"><i class="fa fa-check"></i><b>2.4.1</b> Discrete Random Variables and Distributions</a></li>
+<li class="chapter" data-level="2.4.2" data-path="statistical-properties.html"><a href="statistical-properties.html#continuous-random-variables-and-distributions"><i class="fa fa-check"></i><b>2.4.2</b> Continuous Random Variables and Distributions</a></li>
+<li class="chapter" data-level="2.4.3" data-path="statistical-properties.html"><a href="statistical-properties.html#moments-of-probability-distributions-location-scale-and-shape"><i class="fa fa-check"></i><b>2.4.3</b> Moments of Probability Distributions: Location, Scale and Shape</a></li>
+<li class="chapter" data-level="2.4.4" data-path="statistical-properties.html"><a href="statistical-properties.html#quantile-based-location-scale-and-shape-parameters"><i class="fa fa-check"></i><b>2.4.4</b> Quantile-Based Location, Scale, and Shape Parameters</a></li>
+<li class="chapter" data-level="2.4.5" data-path="statistical-properties.html"><a href="statistical-properties.html#the-cumulative-distribution"><i class="fa fa-check"></i><b>2.4.5</b> The cumulative Distribution</a></li>
+<li class="chapter" data-level="2.4.6" data-path="statistical-properties.html"><a href="statistical-properties.html#continuous-distributions-with-appealing-properties"><i class="fa fa-check"></i><b>2.4.6</b> Continuous Distributions with Appealing Properties</a></li>
+<li class="chapter" data-level="2.4.7" data-path="statistical-properties.html"><a href="statistical-properties.html#generalized-error-distribution"><i class="fa fa-check"></i><b>2.4.7</b> Generalized Error Distribution</a></li>
+<li class="chapter" data-level="2.4.8" data-path="statistical-properties.html"><a href="statistical-properties.html#creating-skewed-distributions-based-on-symmetric-distributions"><i class="fa fa-check"></i><b>2.4.8</b> Creating Skewed Distributions based on Symmetric Distributions</a></li>
+<li class="chapter" data-level="2.4.9" data-path="statistical-properties.html"><a href="statistical-properties.html#kernel-density-estimation"><i class="fa fa-check"></i><b>2.4.9</b> Kernel Density Estimation</a></li>
+<li class="chapter" data-level="2.4.10" data-path="statistical-properties.html"><a href="statistical-properties.html#heavy-tail-distributions"><i class="fa fa-check"></i><b>2.4.10</b> Heavy Tail Distributions</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="statistical-properties.html"><a href="statistical-properties.html#bivariate-distributions"><i class="fa fa-check"></i><b>2.5</b> Bivariate distributions</a>
+<ul>
+<li class="chapter" data-level="2.5.1" data-path="statistical-properties.html"><a href="statistical-properties.html#bivariate-distributions-for-continuous-random-variables"><i class="fa fa-check"></i><b>2.5.1</b> Bivariate Distributions for continuous random variables</a></li>
+<li class="chapter" data-level="2.5.2" data-path="statistical-properties.html"><a href="statistical-properties.html#standard-bivariate-normal-distribution"><i class="fa fa-check"></i><b>2.5.2</b> Standard bivariate normal distribution</a></li>
+<li class="chapter" data-level="2.5.3" data-path="statistical-properties.html"><a href="statistical-properties.html#marginal-distributions"><i class="fa fa-check"></i><b>2.5.3</b> Marginal Distributions</a></li>
+<li class="chapter" data-level="2.5.4" data-path="statistical-properties.html"><a href="statistical-properties.html#conditional-distributions"><i class="fa fa-check"></i><b>2.5.4</b> Conditional Distributions</a></li>
+<li class="chapter" data-level="2.5.5" data-path="statistical-properties.html"><a href="statistical-properties.html#independence"><i class="fa fa-check"></i><b>2.5.5</b> Independence</a></li>
+<li class="chapter" data-level="2.5.6" data-path="statistical-properties.html"><a href="statistical-properties.html#correlation-and-covariance"><i class="fa fa-check"></i><b>2.5.6</b> Correlation and Covariance</a></li>
+<li class="chapter" data-level="2.5.7" data-path="statistical-properties.html"><a href="statistical-properties.html#expectation-and-variance-of-the-sum-of-two-random-variables"><i class="fa fa-check"></i><b>2.5.7</b> Expectation and variance of the sum of two random variables</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="statistical-properties.html"><a href="statistical-properties.html#multivariate-probability-distributions"><i class="fa fa-check"></i><b>2.6</b> Multivariate Probability Distributions</a>
+<ul>
+<li class="chapter" data-level="2.6.1" data-path="statistical-properties.html"><a href="statistical-properties.html#covariance-and-correlation-matrices"><i class="fa fa-check"></i><b>2.6.1</b> Covariance and Correlation Matrices</a></li>
+<li class="chapter" data-level="2.6.2" data-path="statistical-properties.html"><a href="statistical-properties.html#linear-functions-of-random-variables"><i class="fa fa-check"></i><b>2.6.2</b> Linear Functions of random variables</a></li>
+<li class="chapter" data-level="2.6.3" data-path="statistical-properties.html"><a href="statistical-properties.html#central-properties-of-multivariate-distributions"><i class="fa fa-check"></i><b>2.6.3</b> Central properties of multivariate distributions</a></li>
+<li class="chapter" data-level="2.6.4" data-path="statistical-properties.html"><a href="statistical-properties.html#the-scatterplot-matrix"><i class="fa fa-check"></i><b>2.6.4</b> The Scatterplot Matrix</a></li>
+<li class="chapter" data-level="2.6.5" data-path="statistical-properties.html"><a href="statistical-properties.html#multivariate-normal-distribution"><i class="fa fa-check"></i><b>2.6.5</b> Multivariate Normal Distribution</a></li>
+<li class="chapter" data-level="2.6.6" data-path="statistical-properties.html"><a href="statistical-properties.html#normal-mixture-models"><i class="fa fa-check"></i><b>2.6.6</b> Normal Mixture Models</a></li>
+<li class="chapter" data-level="2.6.7" data-path="statistical-properties.html"><a href="statistical-properties.html#the-fisher-information-matrix"><i class="fa fa-check"></i><b>2.6.7</b> The Fisher Information Matrix</a></li>
+<li class="chapter" data-level="2.6.8" data-path="statistical-properties.html"><a href="statistical-properties.html#dimensionality-reduction-techniques-principal-component-analysis-pca"><i class="fa fa-check"></i><b>2.6.8</b> Dimensionality Reduction Techniques: Principal Component Analysis (PCA)</a></li>
+</ul></li>
+<li class="chapter" data-level="2.7" data-path="statistical-properties.html"><a href="statistical-properties.html#matrix-algebra-introduction"><i class="fa fa-check"></i><b>2.7</b> Matrix Algebra: Introduction</a>
+<ul>
+<li class="chapter" data-level="2.7.1" data-path="statistical-properties.html"><a href="statistical-properties.html#matrices-and-vectors"><i class="fa fa-check"></i><b>2.7.1</b> Matrices and Vectors</a></li>
+<li class="chapter" data-level="2.7.2" data-path="statistical-properties.html"><a href="statistical-properties.html#basic-matrix-operations"><i class="fa fa-check"></i><b>2.7.2</b> Basic Matrix Operations</a></li>
+<li class="chapter" data-level="2.7.3" data-path="statistical-properties.html"><a href="statistical-properties.html#summation-notation-in-matrix-form"><i class="fa fa-check"></i><b>2.7.3</b> Summation Notation in Matrix Form</a></li>
+<li class="chapter" data-level="2.7.4" data-path="statistical-properties.html"><a href="statistical-properties.html#systems-of-linear-equations"><i class="fa fa-check"></i><b>2.7.4</b> Systems of Linear Equations</a></li>
+<li class="chapter" data-level="2.7.5" data-path="statistical-properties.html"><a href="statistical-properties.html#positive-definite-pd-matrix"><i class="fa fa-check"></i><b>2.7.5</b> Positive Definite (PD) Matrix</a></li>
+<li class="chapter" data-level="2.7.6" data-path="statistical-properties.html"><a href="statistical-properties.html#portfolio-construction-and-mathematical-properties-using-matrix-algebra"><i class="fa fa-check"></i><b>2.7.6</b> Portfolio Construction and Mathematical Properties using Matrix Algebra</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="resampling-distributions.html"><a href="resampling-distributions.html"><i class="fa fa-check"></i><b>3</b> Resampling Distributions</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="resampling-distributions.html"><a href="resampling-distributions.html#estimating-the-moments-with-bootstraping"><i class="fa fa-check"></i><b>3.1</b> Estimating the Moments with Bootstraping</a></li>
+<li class="chapter" data-level="3.2" data-path="resampling-distributions.html"><a href="resampling-distributions.html#bootstrap-confidence-intervals"><i class="fa fa-check"></i><b>3.2</b> Bootstrap Confidence Intervals</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="resampling-distributions.html"><a href="resampling-distributions.html#bootstrap-of-normal-ci"><i class="fa fa-check"></i><b>3.2.1</b> Bootstrap of Normal CI</a></li>
+<li class="chapter" data-level="3.2.2" data-path="resampling-distributions.html"><a href="resampling-distributions.html#bootstrap-of-t-ci"><i class="fa fa-check"></i><b>3.2.2</b> Bootstrap of t-CI</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="resampling-distributions.html"><a href="resampling-distributions.html#summary-on-data"><i class="fa fa-check"></i><b>3.3</b> Summary on Data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="inductive-statistics-and-regression-analysis-fundamentals.html"><a href="inductive-statistics-and-regression-analysis-fundamentals.html"><i class="fa fa-check"></i><b>4</b> Inductive Statistics and Regression Analysis Fundamentals</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="inductive-statistics-and-regression-analysis-fundamentals.html"><a href="inductive-statistics-and-regression-analysis-fundamentals.html#inductive-statistics"><i class="fa fa-check"></i><b>4.1</b> Inductive Statistics</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="inductive-statistics-and-regression-analysis-fundamentals.html"><a href="inductive-statistics-and-regression-analysis-fundamentals.html#point-estimators"><i class="fa fa-check"></i><b>4.1.1</b> Point Estimators</a></li>
+<li class="chapter" data-level="4.1.2" data-path="inductive-statistics-and-regression-analysis-fundamentals.html"><a href="inductive-statistics-and-regression-analysis-fundamentals.html#confidence-intervals"><i class="fa fa-check"></i><b>4.1.2</b> Confidence Intervals</a></li>
+<li class="chapter" data-level="4.1.3" data-path="inductive-statistics-and-regression-analysis-fundamentals.html"><a href="inductive-statistics-and-regression-analysis-fundamentals.html#hypothesis-testing"><i class="fa fa-check"></i><b>4.1.3</b> Hypothesis Testing</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="inductive-statistics-and-regression-analysis-fundamentals.html"><a href="inductive-statistics-and-regression-analysis-fundamentals.html#introduction-to-regression-analysis"><i class="fa fa-check"></i><b>4.2</b> Introduction to Regression Analysis</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="inductive-statistics-and-regression-analysis-fundamentals.html"><a href="inductive-statistics-and-regression-analysis-fundamentals.html#the-role-of-correlation"><i class="fa fa-check"></i><b>4.2.1</b> The role of correlation</a></li>
+<li class="chapter" data-level="4.2.2" data-path="inductive-statistics-and-regression-analysis-fundamentals.html"><a href="inductive-statistics-and-regression-analysis-fundamentals.html#the-simple-univariate-regression-model"><i class="fa fa-check"></i><b>4.2.2</b> The simple / univariate regression model</a></li>
+<li class="chapter" data-level="4.2.3" data-path="inductive-statistics-and-regression-analysis-fundamentals.html"><a href="inductive-statistics-and-regression-analysis-fundamentals.html#the-multivariate-regression-model"><i class="fa fa-check"></i><b>4.2.3</b> The multivariate regression model</a></li>
+<li class="chapter" data-level="4.2.4" data-path="inductive-statistics-and-regression-analysis-fundamentals.html"><a href="inductive-statistics-and-regression-analysis-fundamentals.html#goodness-of-fit"><i class="fa fa-check"></i><b>4.2.4</b> Goodness of Fit</a></li>
+<li class="chapter" data-level="4.2.5" data-path="inductive-statistics-and-regression-analysis-fundamentals.html"><a href="inductive-statistics-and-regression-analysis-fundamentals.html#assumption-and-diagnostic-tests-of-ols"><i class="fa fa-check"></i><b>4.2.5</b> Assumption and diagnostic tests of OLS</a></li>
+<li class="chapter" data-level="4.2.6" data-path="inductive-statistics-and-regression-analysis-fundamentals.html"><a href="inductive-statistics-and-regression-analysis-fundamentals.html#properties-of-the-ols-estimator"><i class="fa fa-check"></i><b>4.2.6</b> Properties of the OLS Estimator</a></li>
+<li class="chapter" data-level="4.2.7" data-path="inductive-statistics-and-regression-analysis-fundamentals.html"><a href="inductive-statistics-and-regression-analysis-fundamentals.html#expected-value-and-variance-of-the-multivarite-ols-estimator-if-the-assumptions-hold"><i class="fa fa-check"></i><b>4.2.7</b> Expected Value and Variance of the multivarite OLS estimator if the assumptions hold:</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html"><i class="fa fa-check"></i><b>5</b> Fixed Income Securities</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html#economic-analysis"><i class="fa fa-check"></i><b>5.1</b> Economic Analysis</a></li>
+<li class="chapter" data-level="5.2" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html#swiss-fixed-income-securities"><i class="fa fa-check"></i><b>5.2</b> Swiss Fixed Income Securities</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html#shape-of-the-swiss-yield-curve"><i class="fa fa-check"></i><b>5.2.1</b> Shape of the Swiss Yield curve</a></li>
+<li class="chapter" data-level="5.2.2" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html#the-case-for-mean-reversion"><i class="fa fa-check"></i><b>5.2.2</b> The case for mean reversion</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html#principal-component-analysis"><i class="fa fa-check"></i><b>5.3</b> Principal Component Analysis</a></li>
+<li class="chapter" data-level="5.4" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html#bond-valuation-strategies"><i class="fa fa-check"></i><b>5.4</b> Bond Valuation Strategies</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html#the-most-common-bonds"><i class="fa fa-check"></i><b>5.4.1</b> The most common bonds</a></li>
+<li class="chapter" data-level="5.4.2" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html#yield-to-maturity-ytm"><i class="fa fa-check"></i><b>5.4.2</b> Yield-to-Maturity (YTM)</a></li>
+<li class="chapter" data-level="5.4.3" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html#term-structure"><i class="fa fa-check"></i><b>5.4.3</b> Term Structure</a></li>
+<li class="chapter" data-level="5.4.4" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html#estimating-the-term-structure---parametric-and-non-parametric-models"><i class="fa fa-check"></i><b>5.4.4</b> Estimating the Term Structure - Parametric and Non-Parametric Models</a></li>
+<li class="chapter" data-level="5.4.5" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html#sensitivity-of-the-price-to-yield-duration-and-convexity"><i class="fa fa-check"></i><b>5.4.5</b> Sensitivity of the Price to Yield: Duration and Convexity</a></li>
+<li class="chapter" data-level="5.4.6" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html#price-and-yield-full-valuation-and-approximations"><i class="fa fa-check"></i><b>5.4.6</b> Price and Yield: Full Valuation and Approximations</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html#interest-rate-derivative-models"><i class="fa fa-check"></i><b>5.5</b> Interest Rate Derivative Models</a>
+<ul>
+<li class="chapter" data-level="5.5.1" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html#black-model"><i class="fa fa-check"></i><b>5.5.1</b> Black Model</a></li>
+<li class="chapter" data-level="5.5.2" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html#pricing-interest-rate-caps-with-black"><i class="fa fa-check"></i><b>5.5.2</b> Pricing Interest Rate Caps with Black</a></li>
+</ul></li>
+<li class="chapter" data-level="5.6" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html#short-rate-models"><i class="fa fa-check"></i><b>5.6</b> Short Rate Models</a>
+<ul>
+<li class="chapter" data-level="5.6.1" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html#vasicek"><i class="fa fa-check"></i><b>5.6.1</b> Vasicek</a></li>
+<li class="chapter" data-level="5.6.2" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html#cox-ingersoll-and-ross---cir-model"><i class="fa fa-check"></i><b>5.6.2</b> Cox, Ingersoll, and Ross - CIR Model</a></li>
+</ul></li>
+<li class="chapter" data-level="5.7" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html#convertible-bonds"><i class="fa fa-check"></i><b>5.7</b> Convertible Bonds</a>
+<ul>
+<li class="chapter" data-level="5.7.1" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html#main-idea-of-cbs"><i class="fa fa-check"></i><b>5.7.1</b> Main Idea of CBs</a></li>
+<li class="chapter" data-level="5.7.2" data-path="fixed-income-securities.html"><a href="fixed-income-securities.html#individual-constituents-of-cbs"><i class="fa fa-check"></i><b>5.7.2</b> Individual constituents of CBs</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="copulas.html"><a href="copulas.html"><i class="fa fa-check"></i><b>6</b> Copulas</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="copulas.html"><a href="copulas.html#what-on-earth-are-copulas"><i class="fa fa-check"></i><b>6.1</b> What on earth are Copulas?</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="copulas.html"><a href="copulas.html#copula-properties"><i class="fa fa-check"></i><b>6.1.1</b> Copula Properties</a></li>
+<li class="chapter" data-level="6.1.2" data-path="copulas.html"><a href="copulas.html#motivation-for-copulas"><i class="fa fa-check"></i><b>6.1.2</b> Motivation for Copulas</a></li>
+<li class="chapter" data-level="6.1.3" data-path="copulas.html"><a href="copulas.html#copula-examples"><i class="fa fa-check"></i><b>6.1.3</b> Copula Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="copulas.html"><a href="copulas.html#dependence-concepts-and-measures"><i class="fa fa-check"></i><b>6.2</b> Dependence Concepts and Measures</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="copulas.html"><a href="copulas.html#perfect-dependence"><i class="fa fa-check"></i><b>6.2.1</b> Perfect Dependence</a></li>
+<li class="chapter" data-level="6.2.2" data-path="copulas.html"><a href="copulas.html#dependence-measures"><i class="fa fa-check"></i><b>6.2.2</b> Dependence Measures</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="copulas.html"><a href="copulas.html#normal-mixture-copulas"><i class="fa fa-check"></i><b>6.3</b> Normal Mixture Copulas</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="copulas.html"><a href="copulas.html#tail-dependence-1"><i class="fa fa-check"></i><b>6.3.1</b> Tail Dependence</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="copulas.html"><a href="copulas.html#archimedean-copulas"><i class="fa fa-check"></i><b>6.4</b> Archimedean Copulas</a>
+<ul>
+<li class="chapter" data-level="6.4.1" data-path="copulas.html"><a href="copulas.html#frank-copula-and-general-clayton-copula"><i class="fa fa-check"></i><b>6.4.1</b> Frank Copula and General Clayton Copula</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="copulas.html"><a href="copulas.html#applying-copulas-with-actual-data"><i class="fa fa-check"></i><b>6.5</b> Applying Copulas with actual data</a>
+<ul>
+<li class="chapter" data-level="6.5.1" data-path="copulas.html"><a href="copulas.html#estimating-copulas-method-of-moments-using-rank-correlations"><i class="fa fa-check"></i><b>6.5.1</b> Estimating Copulas: Method-of-Moments using Rank Correlations</a></li>
+<li class="chapter" data-level="6.5.2" data-path="copulas.html"><a href="copulas.html#estimating-copulas-maximum-likelihood-estimation-mle"><i class="fa fa-check"></i><b>6.5.2</b> Estimating Copulas: Maximum Likelihood Estimation (MLE)</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Quantitative Finance in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="resampling-distributions" class="section level1" number="3">
+<h1><span class="header-section-number">Chapter 3</span> Resampling Distributions</h1>
+<p>In this chapter, we will look more closely at <strong>Resampling</strong>. We understand that each distribution has location, spread and shape parameters. Location parameters defined the actual estimate of the distribution, such as the mean or median. However, we also require spread parameters which quantify the certainty about the estimates. As such, we need to find reasonable quantities that define the certainty of any parameter estimate. This is usually done through the estimation of standard errors. Through their estimation, we are able to draw confidence intervals and conclude statistical properties, as we have encountered in the previous chapter on inductive statistics.</p>
+<p>The usual issue with finding such parameters is that they may rely on the specific components of the sample. Thus, they are <em>random variables</em>. For instance, if we obtain the mean from a sample A, then this estimate is just one of many potential samples. It does not need to match the mean from sample B or C. Since each different sample will most likely provide a different estimate, the mean was chosen from a random sample given the possible combinations of samples. As such, A is definitively a random variable. Thus, if we assume that the sample has specific properties which may not be generalised well to the population set, then the standard errors retrieved may not be generally applicable metrics.</p>
+<p>We usually assume that the randomly generated coefficient is the long run average which covers the parameter, by the <em>law of large numbers</em>. This is only possible if we assume certain properties of the population function, such as their moments. However, often exact probability calculations cannot be conducted. In these cases, we replace the theoretical formulas by Monte Carlo simulations and sample from the population.</p>
+<p>However, what if we do not know anything about the population? That is, we work with an unknown population? This is where resampling, or bootstrap, methods come into play. In this case, we simply <strong>sample from the sample</strong>. This is known as <strong>resampling</strong>. By <strong>bootstrap approximation</strong> we understand the approximation of the sampling process by resampling. They involve repeatedly drawing samples from a sample set and refitting a model of interest on each sample in order to obtain additional information about the fitted model. Such an approach may allow us to obtain information that would not be available from fitting the model only once using the original training sample.</p>
+<p>In essence, we have two forms of resampling methods:</p>
+<ul>
+<li>Non-Parametric: Model Free</li>
+<li>Parametric: Model Based</li>
+</ul>
+<p>In Non-Parametric Bootstraps, one takes resamples with replacement and assumes no pre-defined form of the density function. We need replacement because replacement gives us IID observations.</p>
+<p>In Parametric Bootstraps, we don’t take a sample, but assume that the original sample is IID and follows a parametric family distribution. That is, we have <span class="math inline">\(f(x|\theta): \theta \in \Theta\)</span>. As such, any unknown value of <span class="math inline">\(\theta\)</span> is the population density. Then, the resamples are IID draws from the density with an estimated <span class="math inline">\(\hat\theta\)</span>.</p>
+<div id="estimating-the-moments-with-bootstraping" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Estimating the Moments with Bootstraping</h2>
+<p>Let’s consider first the theoretical concepts on how to bootstrap the most central statistical properties of a sample. To do so, we assume the following.</p>
+<p>Let <span class="math inline">\(\theta\)</span> be a parameter and <span class="math inline">\(\hat\theta\)</span> be the estimate of the sample. Further, <span class="math inline">\(\hat\theta_1*, \dots, \hat\theta_B*\)</span> are the estimates from resamples 1 to B. Further, <span class="math inline">\(\tilde{\hat\theta}\)</span> is the mean of <span class="math inline">\(\hat\theta_1*, \dots, \hat\theta_B*\)</span>.</p>
+<p>Then, we obtain the <strong>Bias</strong> of the bootstrap as:</p>
+<p><span class="math display">\[
+Bias_{boot}(\hat\theta) = \tilde{\hat\theta} - \hat\theta
+\]</span></p>
+<p>The <strong>Standard Error</strong> of the bootstrap is the sample standard deviation of <span class="math inline">\(\hat\theta_1*, \dots, \hat\theta_B*\)</span>:</p>
+<p><span class="math display">\[
+s_{boot}(\hat\theta) = \sqrt{\frac{1}{B-1}}\sum_{b=1}^B(\hat\theta_b* - \tilde{\hat\theta})^2
+\]</span></p>
+<p>Further, the <strong>MSE</strong> is given as:</p>
+<p><span class="math display">\[
+MSE_{boot}(\hat\theta) = \frac{1}{B}\sum_{b=1}^B(\hat\theta_b* - \tilde{\hat\theta})
+\]</span></p>
+<p>This MSE represents, as always, bot the bias and variance of the samples, and is given as:</p>
+<p><span class="math display">\[
+MSE_{boot}(\hat\theta) \approx Bias^2_{boot}(\hat\theta) + s^2_{boot}(\hat\theta)
+\]</span></p>
+<p>We can apply the bootstrap method directly to calculate the estimates. Doing so, we again use the data on the SMI.</p>
+<div class="sourceCode" id="cb9671"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9671-1"><a href="resampling-distributions.html#cb9671-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the dataset</span></span>
+<span id="cb9671-2"><a href="resampling-distributions.html#cb9671-2" aria-hidden="true" tabindex="-1"></a>SMI <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;~/Desktop/Master UZH/Data/A2_dataset_03.txt&quot;</span>, <span class="at">header =</span> T, <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>)[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span>
+<span id="cb9671-3"><a href="resampling-distributions.html#cb9671-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9671-4"><a href="resampling-distributions.html#cb9671-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the returns </span></span>
+<span id="cb9671-5"><a href="resampling-distributions.html#cb9671-5" aria-hidden="true" tabindex="-1"></a>SMI_ts <span class="ot">&lt;-</span> <span class="fu">Return.calculate</span>(<span class="fu">xts</span>(SMI[,<span class="sc">-</span><span class="dv">1</span>], <span class="at">order.by =</span> <span class="fu">as.Date</span>(SMI[,<span class="dv">1</span>]), <span class="at">method =</span> <span class="st">&quot;log&quot;</span>))[<span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb9671-6"><a href="resampling-distributions.html#cb9671-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(SMI_ts) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Return&quot;</span>)</span>
+<span id="cb9671-7"><a href="resampling-distributions.html#cb9671-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9671-8"><a href="resampling-distributions.html#cb9671-8" aria-hidden="true" tabindex="-1"></a>SMI_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(SMI_ts)<span class="sc">$</span>Return</span></code></pre></div>
+<p>We use the bootstrap method with the <code>bootstrap</code> package. This function has three arguments:</p>
+<ul>
+<li>Data</li>
+<li>Value of the Bootstrap repetitions B</li>
+<li>Function computing the statistic to be bootstrapped</li>
+</ul>
+<p>Then, we compute the Bootstrap Mean and Standard Errors as well as the sample MLE and its Standard Errors with the <code>fitdistr()</code> function of the <code>MASS</code> package. This function takes especially two arguments:</p>
+<ul>
+<li>Data</li>
+<li>densfun</li>
+</ul>
+<p>densfun is an argument which uses the density function that we define. In this case, we will take the t-statistics density function. Others include “beta”, “cauchy”, “chi-squared”, “exponential”, “gamma”, “geometric”, “log-normal”, “lognormal”, “logistic”, “negative binomial”, “normal”, “Poisson”, or “weibull”.</p>
+<p>Based on this density function, we define the MLE distribution used in the bootstrap and the sample.</p>
+<div class="sourceCode" id="cb9672"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9672-1"><a href="resampling-distributions.html#cb9672-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First, we calculate the </span></span>
+<span id="cb9672-2"><a href="resampling-distributions.html#cb9672-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">19960531</span>)</span>
+<span id="cb9672-3"><a href="resampling-distributions.html#cb9672-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9672-4"><a href="resampling-distributions.html#cb9672-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the bootstrap</span></span>
+<span id="cb9672-5"><a href="resampling-distributions.html#cb9672-5" aria-hidden="true" tabindex="-1"></a>nboot <span class="ot">=</span> <span class="dv">1000</span></span>
+<span id="cb9672-6"><a href="resampling-distributions.html#cb9672-6" aria-hidden="true" tabindex="-1"></a>mle <span class="ot">=</span> <span class="cf">function</span>(x){<span class="fu">as.vector</span>(<span class="fu">fitdistr</span>(x, <span class="st">&quot;t&quot;</span>)<span class="sc">$</span>estimate)}</span>
+<span id="cb9672-7"><a href="resampling-distributions.html#cb9672-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9672-8"><a href="resampling-distributions.html#cb9672-8" aria-hidden="true" tabindex="-1"></a><span class="co"># This function now conducts 1000 bootstraps by taking 1000 random samples and calculating the mean, the standard deviation and the DOF</span></span>
+<span id="cb9672-9"><a href="resampling-distributions.html#cb9672-9" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">bootstrap</span>(SMI_df, nboot, mle)</span>
+<span id="cb9672-10"><a href="resampling-distributions.html#cb9672-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9672-11"><a href="resampling-distributions.html#cb9672-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the estimates and SE of the bootstrap</span></span>
+<span id="cb9672-12"><a href="resampling-distributions.html#cb9672-12" aria-hidden="true" tabindex="-1"></a><span class="do">## Here, we take the mean values of each row. The rows are </span></span>
+<span id="cb9672-13"><a href="resampling-distributions.html#cb9672-13" aria-hidden="true" tabindex="-1"></a><span class="do">### (I) Estimates</span></span>
+<span id="cb9672-14"><a href="resampling-distributions.html#cb9672-14" aria-hidden="true" tabindex="-1"></a><span class="do">### (II) Standard errors</span></span>
+<span id="cb9672-15"><a href="resampling-distributions.html#cb9672-15" aria-hidden="true" tabindex="-1"></a><span class="do">### (III) DOF</span></span>
+<span id="cb9672-16"><a href="resampling-distributions.html#cb9672-16" aria-hidden="true" tabindex="-1"></a>mean_bs <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(res<span class="sc">$</span>thetastar[,])</span>
+<span id="cb9672-17"><a href="resampling-distributions.html#cb9672-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9672-18"><a href="resampling-distributions.html#cb9672-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Then, we calculate the standard deviations</span></span>
+<span id="cb9672-19"><a href="resampling-distributions.html#cb9672-19" aria-hidden="true" tabindex="-1"></a>se_bs <span class="ot">&lt;-</span> <span class="fu">apply</span>(res<span class="sc">$</span>thetastar[,], <span class="dv">1</span>, sd)</span>
+<span id="cb9672-20"><a href="resampling-distributions.html#cb9672-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9672-21"><a href="resampling-distributions.html#cb9672-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the estimates and SE of the MLE larger sample </span></span>
+<span id="cb9672-22"><a href="resampling-distributions.html#cb9672-22" aria-hidden="true" tabindex="-1"></a>mean_mle <span class="ot">&lt;-</span> <span class="fu">fitdistr</span>(SMI_df, <span class="at">densfun =</span> <span class="st">&quot;t&quot;</span>)<span class="sc">$</span>estimate</span>
+<span id="cb9672-23"><a href="resampling-distributions.html#cb9672-23" aria-hidden="true" tabindex="-1"></a>sd_mle <span class="ot">&lt;-</span> <span class="fu">fitdistr</span>(SMI_df, <span class="at">densfun =</span> <span class="st">&quot;t&quot;</span>)<span class="sc">$</span>sd</span>
+<span id="cb9672-24"><a href="resampling-distributions.html#cb9672-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9672-25"><a href="resampling-distributions.html#cb9672-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine all to show the similarities</span></span>
+<span id="cb9672-26"><a href="resampling-distributions.html#cb9672-26" aria-hidden="true" tabindex="-1"></a>mle_bs <span class="ot">&lt;-</span> <span class="fu">rbind</span>(mean_mle, mean_bs, sd_mle, se_bs)</span>
+<span id="cb9672-27"><a href="resampling-distributions.html#cb9672-27" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(mle_bs) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Estimate&quot;</span>, <span class="st">&quot;Estimate BS n = 1000&quot;</span>, <span class="st">&quot;SE&quot;</span>, <span class="st">&quot;SE BS n = 1000&quot;</span>)</span>
+<span id="cb9672-28"><a href="resampling-distributions.html#cb9672-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9672-29"><a href="resampling-distributions.html#cb9672-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot</span></span>
+<span id="cb9672-30"><a href="resampling-distributions.html#cb9672-30" aria-hidden="true" tabindex="-1"></a>mle_bs</span></code></pre></div>
+<pre><code>##                                m           s       df
+## Estimate             0.008248028 0.035654368 5.411859
+## Estimate BS n = 1000 0.008160442 0.035886503 6.354277
+## SE                   0.002111809 0.002342880 1.594899
+## SE BS n = 1000       0.002183371 0.002556044 2.589372</code></pre>
+<p>We can calculate the <strong>Bias</strong> as the difference between the estimate and bootstrap estimate mean. Further, the variability is calculated through the difference in standard errors.</p>
+<p>This is given as:</p>
+<div class="sourceCode" id="cb9674"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9674-1"><a href="resampling-distributions.html#cb9674-1" aria-hidden="true" tabindex="-1"></a>Bias_BS <span class="ot">=</span> mle_bs[<span class="dv">1</span>,<span class="dv">1</span>] <span class="sc">-</span> mle_bs[<span class="dv">1</span>,<span class="dv">2</span>]</span>
+<span id="cb9674-2"><a href="resampling-distributions.html#cb9674-2" aria-hidden="true" tabindex="-1"></a>Bias_BS</span></code></pre></div>
+<pre><code>## [1] -0.02740634</code></pre>
+<p>Both are rather small, although the bias is smaller than the variability. We can also increase the certainty by taking different density functions we deem to better fit the data.</p>
+<p>Importantly, we can also plot the density of the bootstraps to understand for which values of n the MLE is quasi normally distributed. In order to do so, we can do the following:</p>
+<div class="sourceCode" id="cb9676"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9676-1"><a href="resampling-distributions.html#cb9676-1" aria-hidden="true" tabindex="-1"></a>dof <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(res<span class="sc">$</span>thetastar[<span class="dv">3</span>,])</span>
+<span id="cb9676-2"><a href="resampling-distributions.html#cb9676-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(dof) <span class="ot">&lt;-</span> <span class="st">&quot;DOF&quot;</span></span>
+<span id="cb9676-3"><a href="resampling-distributions.html#cb9676-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9676-4"><a href="resampling-distributions.html#cb9676-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create plot</span></span>
+<span id="cb9676-5"><a href="resampling-distributions.html#cb9676-5" aria-hidden="true" tabindex="-1"></a>dof <span class="sc">%&gt;%</span> </span>
+<span id="cb9676-6"><a href="resampling-distributions.html#cb9676-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> DOF)) <span class="sc">+</span> </span>
+<span id="cb9676-7"><a href="resampling-distributions.html#cb9676-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">y=</span>..density..), <span class="at">position=</span><span class="st">&quot;identity&quot;</span>, <span class="at">alpha=</span><span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">&quot;goldenrod&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb9676-8"><a href="resampling-distributions.html#cb9676-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Kernel density estimates of 1000 bootstrap estimates on the DOF&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb9676-9"><a href="resampling-distributions.html#cb9676-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;Density&quot;</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">&quot;DOF&quot;</span>) <span class="sc">+</span></span>
+<span id="cb9676-10"><a href="resampling-distributions.html#cb9676-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">&quot;tomato3&quot;</span>, <span class="st">&quot;khaki3&quot;</span>, <span class="st">&quot;lightsteelblue3&quot;</span>, <span class="st">&quot;dodgerblue4&quot;</span>, <span class="st">&quot;violetred4&quot;</span>)) <span class="sc">+</span> </span>
+<span id="cb9676-11"><a href="resampling-distributions.html#cb9676-11" aria-hidden="true" tabindex="-1"></a><span class="fu">theme</span>(<span class="at">plot.title=</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">14</span>, <span class="at">color=</span><span class="st">&quot;grey26&quot;</span>,</span>
+<span id="cb9676-12"><a href="resampling-distributions.html#cb9676-12" aria-hidden="true" tabindex="-1"></a><span class="at">hjust=</span><span class="fl">0.5</span>,</span>
+<span id="cb9676-13"><a href="resampling-distributions.html#cb9676-13" aria-hidden="true" tabindex="-1"></a><span class="at">lineheight=</span><span class="fl">1.2</span>), <span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill=</span><span class="st">&quot;#f7f7f7&quot;</span>),</span>
+<span id="cb9676-14"><a href="resampling-distributions.html#cb9676-14" aria-hidden="true" tabindex="-1"></a><span class="at">panel.grid.major.y =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="st">&quot;solid&quot;</span>, <span class="at">color =</span> <span class="st">&quot;grey&quot;</span>),</span>
+<span id="cb9676-15"><a href="resampling-distributions.html#cb9676-15" aria-hidden="true" tabindex="-1"></a><span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb9676-16"><a href="resampling-distributions.html#cb9676-16" aria-hidden="true" tabindex="-1"></a><span class="at">panel.grid.major.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb9676-17"><a href="resampling-distributions.html#cb9676-17" aria-hidden="true" tabindex="-1"></a><span class="at">plot.background =</span> <span class="fu">element_rect</span>(<span class="at">fill=</span><span class="st">&quot;#f7f7f7&quot;</span>, <span class="at">color =</span> <span class="st">&quot;#f7f7f7&quot;</span>), <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">color=</span><span class="st">&quot;grey26&quot;</span>, <span class="at">size=</span><span class="dv">12</span>),</span>
+<span id="cb9676-18"><a href="resampling-distributions.html#cb9676-18" aria-hidden="true" tabindex="-1"></a><span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">color=</span><span class="st">&quot;grey26&quot;</span>, <span class="at">size=</span><span class="dv">12</span>),</span>
+<span id="cb9676-19"><a href="resampling-distributions.html#cb9676-19" aria-hidden="true" tabindex="-1"></a><span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">&quot;black&quot;</span>)) </span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-194-1.png" width="672" /></p>
+<p>This shows importantly that the SMI returns, when considered at a monthly interval, do not follow a unimodal, normal distribution. Rather, it is bimodal with severe right skewed properties. This has important implications on the distribution assumption. We understand that, in a normal distribution, the DOF is <span class="math inline">\(\infty\)</span>. However, in this bootstrapped example, we can see that the DOF is likely to be less than approximately 13. As such, even the most extreme DOF are unlikely to satisfy the condition needed for normal distribition. As such, n = 392 is not enough to assume a normal distribution of the returns. As such, the t-distribution is better suited.</p>
+</div>
+<div id="bootstrap-confidence-intervals" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Bootstrap Confidence Intervals</h2>
+<p>Besides the mean, standard error and DOF to infer on the properties of a sample distribution and its empirical validity, we can also use bootstrap to construct confidence intervals (CI).</p>
+<p>In the case of bootstraps, we take an approximation of the population probability distribution using individual samples. When CIs use approximations, then there are two coverage probabilities: Nominal and Actual. We can calculate both and show their discrepancies from the bootstrap. This is needed to calculate the <strong>accuracy of a bootstrapped CI</strong>, which is the difference between the two.</p>
+<div id="bootstrap-of-normal-ci" class="section level3" number="3.2.1">
+<h3><span class="header-section-number">3.2.1</span> Bootstrap of Normal CI</h3>
+<p>We again define <span class="math inline">\(\hat\theta\)</span> as estimate and <span class="math inline">\(s_{boot}(\hat\theta\)</span> as its standard deviation. Then, the CI is just calculated in the usual way as:</p>
+<p><span class="math display">\[
+\hat\theta \pm s_{boot}(\hat\theta)z_{\alpha/2}
+\]</span></p>
+<p>Then the CI can be calculated in the original way. Please also note that we do not assume that the population is normally distributed. Rather, <span class="math inline">\(\hat\theta\)</span> follows a normal distribution according to the CLT.</p>
+</div>
+<div id="bootstrap-of-t-ci" class="section level3" number="3.2.2">
+<h3><span class="header-section-number">3.2.2</span> Bootstrap of t-CI</h3>
+<p>If we have a standard error of <span class="math inline">\(\hat\theta\)</span> available, we can use the Bootstrap-t method where we obtain more accurate CIs. We can easily show how the bootstrap-t and the usual t CI method are related. To do so, we use the usual t-statistic given by:</p>
+<p><span class="math display">\[
+t = \frac{\mu - \bar Y }{s/\sqrt{n}}
+\]</span></p>
+<p>For normally distributed data, we understand that the probability distribution of t has n-1 degrees of freedom. Consequently, <span class="math inline">\(t_{\alpha/2, n-1}\)</span> quantifies the <span class="math inline">\(\alpha/2\)</span> upper and lower quantile values of the distribution.</p>
+<p>Therefore, we get: that the probability is <span class="math inline">\(1-\alpha\)</span> for:</p>
+<p><span class="math display">\[
+-t_{\alpha/2, n-1} \leq t \leq t_{\alpha/2, n-1}
+\]</span></p>
+<p>and further:</p>
+<p><span class="math display">\[
+1-\alpha = P[\bar Y - t_{\alpha/2, n-1}\frac{s}{\sqrt{n}} \leq \mu \leq \bar Y + t_{\alpha/2, n-1}\frac{s}{\sqrt{n}}]
+\]</span></p>
+<p>and finally:</p>
+<p><span class="math display">\[
+\bar Y \pm \frac{s}{\sqrt{n}} t_{\alpha/2, n-1}\frac{s}{\sqrt{n}}
+\]</span></p>
+<p>is a <span class="math inline">\(1-\alpha\)</span> CI for <span class="math inline">\(\mu\)</span> if we assume a normal distribution. Please revisit the chapter on inductive statistics to have a more elaborate discussion on this.</p>
+<p>If we are not sampling from a normal distribution, we can no longer conduct this type of inference for the CIs. This is because we do not know the probability distribution. Further, even if we knew it, we could mathematically not precisely transform the distribution into a t-distribution.</p>
+<p>However, we can do so by using the bootstrap. In this case, we just calculate:</p>
+<p><span class="math display">\[
+t_{boot,b} = \frac{\bar Y - \bar Y_{boot,b}}{s_{boot,b}/\sqrt{n}}
+\]</span></p>
+<p>Here we just replaced the mean and sd MLE with the bootstrapped alternatives. Since all observations are independent of each other, the bootstrap estimates can be treated as a random sample from the distribution of the t-statistic. After we calculate B values of the t-statistic, we can find the <span class="math inline">\(\alpha/2\)</span> upper and lower quantiles of these values. They can be calculated independent of each other.</p>
+<p>Based on this, we then have the CI given as:</p>
+<p><span class="math display">\[
+CI = (\bar Y - t_L\frac{s}{\sqrt{n}}, \bar Y + t_U\frac{s}{\sqrt{n}})
+\]</span></p>
+<p>where we just replaced the usual t-values by the bootstrapped forms called <span class="math inline">\(t_L\)</span> and <span class="math inline">\(t_U\)</span>.</p>
+<p>As such, by creating an <em>empirical distribution</em> from the sample where we have an equally weighted resampling, we can create a probability distribution used for CIs.</p>
+<p>Of course, we can expand the use of the t-bootstrapped CI to obtain CIs of other parameters, such as the standard deviation or further moments. To do so, we can take the usual function and apply it onto another bootstrapped parameter:</p>
+<p><span class="math display">\[
+t_{boot,b} =\frac{\hat\theta - \hat\theta_b*}{s_b(\hat\theta)}
+\]</span></p>
+<p>Then, the CI will again be:</p>
+<p><span class="math display">\[
+CI = (\hat\theta - t_Ls(\hat\theta), \hat\theta + t_Us(\hat\theta))
+\]</span></p>
+<p>Now, let’s look at an example for the CI calculation again. We know from the chapter on qunatile-based location, scale and shape parameters that a quantile-based parameter representing the tail weight is defined as the ration of two scale parameters:</p>
+<p><span class="math display">\[
+\frac{s(p_1, 1-p_1)}{s(p_2, 1-p_2)}
+\]</span></p>
+<p>whereas:</p>
+<p><span class="math display">\[
+s(p_1, 1-p_1) = \frac{F^{-1}(1-p_1) - F^{-1}(p_1)}{a}
+\]</span></p>
+<p>Now, we can retrieve the mean of the respective tail weights. However, obtaining a CI is easily possible with a bootstrap as we will show. We will calculate <span class="math inline">\(BC_a\)</span> CIs. These are CIs which are bias corrected and accelerated. They are a form of sophisticated percentile methods which correct for <strong>bias and heteroskedasticity in bootstrapping methods</strong>. This method estimates the <strong>bias and the rate of change of the variance</strong>. This is done with the <code>bcanon()</code> function of the <code>bootstrap</code> package.</p>
+<p>Let’s apply this to the SMI returns.</p>
+<p>We essentially follow the same process as earlier. But now, instead of the mean from the t-distribution, we calculate the CI for the tail distribution. This is done by defining a function we call “heavy_t”. Then, we use the bias corrected bootstrap method and run the usual formula to obtain the CIs.</p>
+<div class="sourceCode" id="cb9677"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9677-1"><a href="resampling-distributions.html#cb9677-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First, define a function which calculates the shape parameter: </span></span>
+<span id="cb9677-2"><a href="resampling-distributions.html#cb9677-2" aria-hidden="true" tabindex="-1"></a>heavy_t <span class="ot">=</span> <span class="cf">function</span>(x, <span class="at">p1 =</span> <span class="fl">0.02</span>, <span class="at">p2 =</span> <span class="fl">0.25</span>){</span>
+<span id="cb9677-3"><a href="resampling-distributions.html#cb9677-3" aria-hidden="true" tabindex="-1"></a>  q <span class="ot">=</span> <span class="fu">quantile</span>(x, <span class="fu">c</span>(p1,p2,<span class="dv">1</span><span class="sc">-</span>p2,<span class="dv">1</span><span class="sc">-</span>p1))</span>
+<span id="cb9677-4"><a href="resampling-distributions.html#cb9677-4" aria-hidden="true" tabindex="-1"></a>  (q[<span class="dv">4</span>] <span class="sc">-</span> q[<span class="dv">1</span>]) <span class="sc">/</span> (q[<span class="dv">3</span>] <span class="sc">-</span> q[<span class="dv">2</span>])</span>
+<span id="cb9677-5"><a href="resampling-distributions.html#cb9677-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9677-6"><a href="resampling-distributions.html#cb9677-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9677-7"><a href="resampling-distributions.html#cb9677-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Then, calculate the bootstrap as before, but bias corrected. Doing so, you need the bcanon function</span></span>
+<span id="cb9677-8"><a href="resampling-distributions.html#cb9677-8" aria-hidden="true" tabindex="-1"></a>bca_ht <span class="ot">=</span> <span class="fu">bcanon</span>(SMI_df, <span class="dv">2000</span>, heavy_t)</span>
+<span id="cb9677-9"><a href="resampling-distributions.html#cb9677-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9677-10"><a href="resampling-distributions.html#cb9677-10" aria-hidden="true" tabindex="-1"></a>bca_ht<span class="sc">$</span>confpoints</span></code></pre></div>
+<pre><code>##      alpha bca point
+## [1,] 0.025  3.141040
+## [2,] 0.050  3.216642
+## [3,] 0.100  3.315608
+## [4,] 0.160  3.390420
+## [5,] 0.840  4.032531
+## [6,] 0.900  4.140335
+## [7,] 0.950  4.291562
+## [8,] 0.975  4.438047</code></pre>
+<p>As such, we can see that the 90% CI is between (3.19, 4.25). Note that this is the formula for <span class="math inline">\((\bar Y - t_L\frac{s}{\sqrt{n}}, \bar Y + t_U\frac{s}{\sqrt{n}})\)</span>. In any purely normal distribution, the value would be approximately 2.91. Consequently, we expect higher tail risk, which could not be approximated by normal distributions.</p>
+</div>
+</div>
+<div id="summary-on-data" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Summary on Data</h2>
+<p>In the next chapter, we will look at certain general methods that we used in the previous sub-chapters. Doing</p>
+<p>We now look at the Walmart stock prices to define the data we are working with</p>
+<div class="sourceCode" id="cb9679"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9679-1"><a href="resampling-distributions.html#cb9679-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get walmart and transform to xts object</span></span>
+<span id="cb9679-2"><a href="resampling-distributions.html#cb9679-2" aria-hidden="true" tabindex="-1"></a>WMT <span class="ot">&lt;-</span> <span class="fu">tq_get</span>(<span class="st">&quot;WMT&quot;</span>,</span>
+<span id="cb9679-3"><a href="resampling-distributions.html#cb9679-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">from =</span> <span class="st">&quot;1990-01-01&quot;</span>,</span>
+<span id="cb9679-4"><a href="resampling-distributions.html#cb9679-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">to =</span> <span class="st">&quot;2022-02-01&quot;</span>,</span>
+<span id="cb9679-5"><a href="resampling-distributions.html#cb9679-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">get =</span> <span class="st">&quot;stock.prices&quot;</span>)</span>
+<span id="cb9679-6"><a href="resampling-distributions.html#cb9679-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9679-7"><a href="resampling-distributions.html#cb9679-7" aria-hidden="true" tabindex="-1"></a>WMT_ts <span class="ot">&lt;-</span> <span class="fu">xts</span>(WMT[,<span class="dv">8</span>], <span class="at">order.by =</span> <span class="fu">as.Date</span>(WMT<span class="sc">$</span>date))</span>
+<span id="cb9679-8"><a href="resampling-distributions.html#cb9679-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9679-9"><a href="resampling-distributions.html#cb9679-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate returns</span></span>
+<span id="cb9679-10"><a href="resampling-distributions.html#cb9679-10" aria-hidden="true" tabindex="-1"></a>WMT_ts_ret <span class="ot">&lt;-</span> WMT_ts <span class="sc">%&gt;%</span> <span class="fu">Return.calculate</span>(<span class="at">method =</span> <span class="st">&quot;log&quot;</span>)</span>
+<span id="cb9679-11"><a href="resampling-distributions.html#cb9679-11" aria-hidden="true" tabindex="-1"></a>WMT_ts_ret <span class="ot">&lt;-</span> WMT_ts_ret[<span class="sc">-</span><span class="dv">1</span>]</span></code></pre></div>
+<p>Based on this, we now follow certain tests to ensure that we understood the bootstrap principles.</p>
+<p>For instance, we said that sometimes the data may not follow a normal distribution. This can be the case if we assume a skewed distribution with heavy tails. Consequently, we may wonder what a skewed t-distribution actually looks like. To do so, we can take the help of the <code>qsstd</code> function.</p>
+<div class="sourceCode" id="cb9680"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9680-1"><a href="resampling-distributions.html#cb9680-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First, we define the function for the parameter distribution, as with all common distributions before. </span></span>
+<span id="cb9680-2"><a href="resampling-distributions.html#cb9680-2" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">rsstd</span>(<span class="dv">100000</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>, <span class="at">nu =</span> <span class="dv">5</span>, <span class="at">xi =</span> <span class="dv">3</span>)</span>
+<span id="cb9680-3"><a href="resampling-distributions.html#cb9680-3" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">rsstd</span>(<span class="dv">100000</span>, <span class="at">mean =</span> <span class="dv">2</span>, <span class="at">sd =</span> <span class="dv">1</span>, <span class="at">nu =</span> <span class="dv">5</span>, <span class="at">xi =</span> <span class="fl">1.5</span>)</span>
+<span id="cb9680-4"><a href="resampling-distributions.html#cb9680-4" aria-hidden="true" tabindex="-1"></a>c <span class="ot">&lt;-</span> <span class="fu">rsstd</span>(<span class="dv">100000</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">2</span>, <span class="at">nu =</span> <span class="dv">5</span>, <span class="at">xi =</span> <span class="fl">1.5</span>)</span>
+<span id="cb9680-5"><a href="resampling-distributions.html#cb9680-5" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">rsstd</span>(<span class="dv">100000</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>, <span class="at">nu =</span> <span class="dv">10</span>, <span class="at">xi =</span> <span class="fl">1.5</span>)</span>
+<span id="cb9680-6"><a href="resampling-distributions.html#cb9680-6" aria-hidden="true" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">rsstd</span>(<span class="dv">100000</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>, <span class="at">nu =</span> <span class="dv">10</span>, <span class="at">xi =</span> <span class="sc">-</span><span class="fl">1.5</span>)</span>
+<span id="cb9680-7"><a href="resampling-distributions.html#cb9680-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9680-8"><a href="resampling-distributions.html#cb9680-8" aria-hidden="true" tabindex="-1"></a>df_rsstd <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">cbind</span>(a,b,c,d,e))</span>
+<span id="cb9680-9"><a href="resampling-distributions.html#cb9680-9" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(df_rsstd) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;Skew-T(0,1,5,3)&quot;</span>, <span class="st">&quot;Skew-T(2,1,5,1.5)&quot;</span>, <span class="st">&quot;Skew-T(0,2,5,1.5)&quot;</span>, <span class="st">&quot;Skew-T(0,2,10,1.5)&quot;</span>, <span class="st">&quot;Skew-T(0,2,10,-1.5)&quot;</span>)</span>
+<span id="cb9680-10"><a href="resampling-distributions.html#cb9680-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9680-11"><a href="resampling-distributions.html#cb9680-11" aria-hidden="true" tabindex="-1"></a>df_rsstd_melt <span class="ot">&lt;-</span> <span class="fu">melt</span>(df_rsstd)</span></code></pre></div>
+<pre><code>## No id variables; using all as measure variables</code></pre>
+<div class="sourceCode" id="cb9682"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9682-1"><a href="resampling-distributions.html#cb9682-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Plot</span></span>
+<span id="cb9682-2"><a href="resampling-distributions.html#cb9682-2" aria-hidden="true" tabindex="-1"></a>df_rsstd_melt <span class="sc">%&gt;%</span></span>
+<span id="cb9682-3"><a href="resampling-distributions.html#cb9682-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">fill =</span> variable, <span class="at">color =</span> variable)) <span class="sc">+</span></span>
+<span id="cb9682-4"><a href="resampling-distributions.html#cb9682-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb9682-5"><a href="resampling-distributions.html#cb9682-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">xlim</span>(<span class="sc">-</span><span class="dv">5</span>,<span class="dv">5</span>)</span></code></pre></div>
+<pre><code>## Warning: Removed 3924 rows containing non-finite values (stat_density).</code></pre>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-197-1.png" width="672" /></p>
+<p>As we can see, we can define four parameters. We find the following:</p>
+<ul>
+<li>The mean just shifts the location of the distribution</li>
+<li>The standard deviation increases the spread of the distribution</li>
+<li>The nu parameter is the shape parameter. The larger, the more tail weights</li>
+<li>The xi parameter is the skewness parameter. The higher, the more right-skewed (positive right skewed, negative left skewed)</li>
+</ul>
+<p>Since we stated that many returns may not be normally distributed, it is interesting to see how the different distributions can fit onto the data at hand. To do so, we can plot two distinct QQ-Plots on the data and compare their fit.</p>
+<div class="sourceCode" id="cb9684"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9684-1"><a href="resampling-distributions.html#cb9684-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First, we calculate the dataframe</span></span>
+<span id="cb9684-2"><a href="resampling-distributions.html#cb9684-2" aria-hidden="true" tabindex="-1"></a>WMT_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(WMT_ts_ret)[,<span class="dv">1</span>]</span>
+<span id="cb9684-3"><a href="resampling-distributions.html#cb9684-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9684-4"><a href="resampling-distributions.html#cb9684-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit skewed t-distribution</span></span>
+<span id="cb9684-5"><a href="resampling-distributions.html#cb9684-5" aria-hidden="true" tabindex="-1"></a>fit_skew_t <span class="ot">=</span> <span class="fu">sstdFit</span>(WMT_df)</span>
+<span id="cb9684-6"><a href="resampling-distributions.html#cb9684-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9684-7"><a href="resampling-distributions.html#cb9684-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Then we define a grid onto which we will employ the skewed t-values. </span></span>
+<span id="cb9684-8"><a href="resampling-distributions.html#cb9684-8" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="fu">length</span>(WMT_df)</span>
+<span id="cb9684-9"><a href="resampling-distributions.html#cb9684-9" aria-hidden="true" tabindex="-1"></a>q.grid <span class="ot">=</span> (<span class="dv">1</span><span class="sc">:</span>n) <span class="sc">/</span> (n<span class="sc">+</span><span class="dv">1</span>)</span>
+<span id="cb9684-10"><a href="resampling-distributions.html#cb9684-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9684-11"><a href="resampling-distributions.html#cb9684-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Then we create Skew Student-t Distribution and Parameter Estimation values to to compute the quantiles of distribution function. This is the same approach as we would use to simulate a skewed t-distribution (for instance, with F/S or A/C skewness). Here, we calculate the quantile values to plot them against the actual observations. </span></span>
+<span id="cb9684-12"><a href="resampling-distributions.html#cb9684-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9684-13"><a href="resampling-distributions.html#cb9684-13" aria-hidden="true" tabindex="-1"></a>q_skew <span class="ot">&lt;-</span> <span class="fu">qsstd</span>(q.grid, </span>
+<span id="cb9684-14"><a href="resampling-distributions.html#cb9684-14" aria-hidden="true" tabindex="-1"></a>              <span class="at">mean =</span> fit_skew_t<span class="sc">$</span>estimate[<span class="dv">1</span>],</span>
+<span id="cb9684-15"><a href="resampling-distributions.html#cb9684-15" aria-hidden="true" tabindex="-1"></a>              <span class="at">sd =</span> fit_skew_t<span class="sc">$</span>estimate[<span class="dv">2</span>],</span>
+<span id="cb9684-16"><a href="resampling-distributions.html#cb9684-16" aria-hidden="true" tabindex="-1"></a>              <span class="at">nu =</span> fit_skew_t<span class="sc">$</span>estimate[<span class="dv">3</span>], <span class="co"># Shape parameter</span></span>
+<span id="cb9684-17"><a href="resampling-distributions.html#cb9684-17" aria-hidden="true" tabindex="-1"></a>              <span class="at">xi =</span> fit_skew_t<span class="sc">$</span>estimate[<span class="dv">4</span>]) <span class="co"># skewness parameter</span></span>
+<span id="cb9684-18"><a href="resampling-distributions.html#cb9684-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9684-19"><a href="resampling-distributions.html#cb9684-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Create DF</span></span>
+<span id="cb9684-20"><a href="resampling-distributions.html#cb9684-20" aria-hidden="true" tabindex="-1"></a>qq <span class="ot">&lt;-</span> <span class="fu">qqplot</span>(WMT_df, q_skew,</span>
+<span id="cb9684-21"><a href="resampling-distributions.html#cb9684-21" aria-hidden="true" tabindex="-1"></a>   <span class="at">ylab =</span> <span class="st">&quot;skewed-t quantiles&quot;</span> )</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-198-1.png" width="672" /></p>
+<div class="sourceCode" id="cb9685"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9685-1"><a href="resampling-distributions.html#cb9685-1" aria-hidden="true" tabindex="-1"></a>qq_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">cbind</span>(qq<span class="sc">$</span>x, qq<span class="sc">$</span>y))</span>
+<span id="cb9685-2"><a href="resampling-distributions.html#cb9685-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(qq_df) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;skewed-t quantiles&quot;</span>, <span class="st">&quot;Return Walmart&quot;</span>)</span>
+<span id="cb9685-3"><a href="resampling-distributions.html#cb9685-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9685-4"><a href="resampling-distributions.html#cb9685-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the qqplot</span></span>
+<span id="cb9685-5"><a href="resampling-distributions.html#cb9685-5" aria-hidden="true" tabindex="-1"></a>qq_df <span class="sc">%&gt;%</span> </span>
+<span id="cb9685-6"><a href="resampling-distributions.html#cb9685-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="st">`</span><span class="at">skewed-t quantiles</span><span class="st">`</span>, <span class="at">y =</span> <span class="st">`</span><span class="at">Return Walmart</span><span class="st">`</span>)) <span class="sc">+</span> </span>
+<span id="cb9685-7"><a href="resampling-distributions.html#cb9685-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;goldenrod&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb9685-8"><a href="resampling-distributions.html#cb9685-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Q-Q Plot of Walmart Returns&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb9685-9"><a href="resampling-distributions.html#cb9685-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">&quot;tomato3&quot;</span>, <span class="st">&quot;khaki3&quot;</span>, <span class="st">&quot;lightsteelblue3&quot;</span>, <span class="st">&quot;dodgerblue4&quot;</span>, <span class="st">&quot;violetred4&quot;</span>)) <span class="sc">+</span> </span>
+<span id="cb9685-10"><a href="resampling-distributions.html#cb9685-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title=</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">14</span>, <span class="at">color=</span><span class="st">&quot;grey26&quot;</span>,</span>
+<span id="cb9685-11"><a href="resampling-distributions.html#cb9685-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">hjust=</span><span class="fl">0.5</span>,</span>
+<span id="cb9685-12"><a href="resampling-distributions.html#cb9685-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">lineheight=</span><span class="fl">1.2</span>), <span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill=</span><span class="st">&quot;#f7f7f7&quot;</span>),</span>
+<span id="cb9685-13"><a href="resampling-distributions.html#cb9685-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">panel.grid.major.y =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="st">&quot;solid&quot;</span>, <span class="at">color =</span> <span class="st">&quot;grey&quot;</span>),</span>
+<span id="cb9685-14"><a href="resampling-distributions.html#cb9685-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb9685-15"><a href="resampling-distributions.html#cb9685-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">panel.grid.major.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb9685-16"><a href="resampling-distributions.html#cb9685-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot.background =</span> <span class="fu">element_rect</span>(<span class="at">fill=</span><span class="st">&quot;#f7f7f7&quot;</span>, <span class="at">color =</span> <span class="st">&quot;#f7f7f7&quot;</span>), <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">color=</span><span class="st">&quot;grey26&quot;</span>, <span class="at">size=</span><span class="dv">12</span>),</span>
+<span id="cb9685-17"><a href="resampling-distributions.html#cb9685-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">color=</span><span class="st">&quot;grey26&quot;</span>, <span class="at">size=</span><span class="dv">12</span>),</span>
+<span id="cb9685-18"><a href="resampling-distributions.html#cb9685-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">&quot;black&quot;</span>)) </span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-198-2.png" width="672" /></p>
+<p>Given the QQ-Plot, we can observe that it fits the data with certain outliers on both sides. As such, we can observe that the data can fit approximately the t-skewed distribution. However, there still are some discrepancies. But given the normal distribution, we have seen improvements in the resampling.</p>
+<p>Next on, we are interested in finding out about the Kurtosis. Note that we can create a kurtosis with the fourth moment order. Based on this kurtosis, we then implement both a parametric and non-parametric resampling technique, also based on the skewness of the t-distribution to account for heavy tails.</p>
+<div class="sourceCode" id="cb9686"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9686-1"><a href="resampling-distributions.html#cb9686-1" aria-hidden="true" tabindex="-1"></a>quKurt <span class="ot">=</span> <span class="cf">function</span>(y, <span class="at">p1 =</span> <span class="fl">0.025</span>, <span class="at">p2 =</span> <span class="fl">0.25</span>){</span>
+<span id="cb9686-2"><a href="resampling-distributions.html#cb9686-2" aria-hidden="true" tabindex="-1"></a>  Q <span class="ot">=</span> <span class="fu">quantile</span>(y, <span class="fu">c</span>(p1, p2, <span class="dv">1</span> <span class="sc">-</span> p2, <span class="dv">1</span> <span class="sc">-</span> p1))</span>
+<span id="cb9686-3"><a href="resampling-distributions.html#cb9686-3" aria-hidden="true" tabindex="-1"></a>  k <span class="ot">=</span> (Q[<span class="dv">4</span>] <span class="sc">-</span> Q[<span class="dv">1</span>]) <span class="sc">/</span> (Q[<span class="dv">3</span>] <span class="sc">-</span> Q[<span class="dv">2</span>])</span>
+<span id="cb9686-4"><a href="resampling-distributions.html#cb9686-4" aria-hidden="true" tabindex="-1"></a>  k</span>
+<span id="cb9686-5"><a href="resampling-distributions.html#cb9686-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9686-6"><a href="resampling-distributions.html#cb9686-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9686-7"><a href="resampling-distributions.html#cb9686-7" aria-hidden="true" tabindex="-1"></a>nboot <span class="ot">=</span> <span class="dv">5000</span></span>
+<span id="cb9686-8"><a href="resampling-distributions.html#cb9686-8" aria-hidden="true" tabindex="-1"></a>ModelFree_kurt  <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, nboot)</span>
+<span id="cb9686-9"><a href="resampling-distributions.html#cb9686-9" aria-hidden="true" tabindex="-1"></a>ModelBased_kurt <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">0</span>, nboot)</span>
+<span id="cb9686-10"><a href="resampling-distributions.html#cb9686-10" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="st">&quot;5640&quot;</span>)</span>
+<span id="cb9686-11"><a href="resampling-distributions.html#cb9686-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9686-12"><a href="resampling-distributions.html#cb9686-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nboot){</span>
+<span id="cb9686-13"><a href="resampling-distributions.html#cb9686-13" aria-hidden="true" tabindex="-1"></a>  samp_ModelFree <span class="ot">=</span> <span class="fu">sample</span>(WMT_df, n, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9686-14"><a href="resampling-distributions.html#cb9686-14" aria-hidden="true" tabindex="-1"></a>  samp_ModelBased <span class="ot">=</span> <span class="fu">rsstd</span>(n, fit_skew_t<span class="sc">$</span>estimate[<span class="dv">1</span>],</span>
+<span id="cb9686-15"><a href="resampling-distributions.html#cb9686-15" aria-hidden="true" tabindex="-1"></a>   fit_skew_t<span class="sc">$</span>estimate[<span class="dv">2</span>],</span>
+<span id="cb9686-16"><a href="resampling-distributions.html#cb9686-16" aria-hidden="true" tabindex="-1"></a>   fit_skew_t<span class="sc">$</span>estimate[<span class="dv">3</span>], fit_skew_t<span class="sc">$</span>estimate[<span class="dv">4</span>])</span>
+<span id="cb9686-17"><a href="resampling-distributions.html#cb9686-17" aria-hidden="true" tabindex="-1"></a>  ModelFree_kurt[i] <span class="ot">=</span> <span class="fu">quKurt</span>(samp_ModelFree)</span>
+<span id="cb9686-18"><a href="resampling-distributions.html#cb9686-18" aria-hidden="true" tabindex="-1"></a>  ModelBased_kurt[i] <span class="ot">=</span> <span class="fu">quKurt</span>(samp_ModelBased)</span>
+<span id="cb9686-19"><a href="resampling-distributions.html#cb9686-19" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb9686-20"><a href="resampling-distributions.html#cb9686-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9686-21"><a href="resampling-distributions.html#cb9686-21" aria-hidden="true" tabindex="-1"></a>dens <span class="ot">&lt;-</span> <span class="fu">density</span>(ModelFree_kurt)</span>
+<span id="cb9686-22"><a href="resampling-distributions.html#cb9686-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9686-23"><a href="resampling-distributions.html#cb9686-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Create DF</span></span>
+<span id="cb9686-24"><a href="resampling-distributions.html#cb9686-24" aria-hidden="true" tabindex="-1"></a>dF_qk <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">cbind</span>(ModelFree_kurt, dens<span class="sc">$</span>x, dens<span class="sc">$</span>y))</span></code></pre></div>
+<pre><code>## Warning in base::cbind(...): number of rows of result is not a multiple of vector length (arg 2)</code></pre>
+<div class="sourceCode" id="cb9688"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9688-1"><a href="resampling-distributions.html#cb9688-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create plot</span></span>
+<span id="cb9688-2"><a href="resampling-distributions.html#cb9688-2" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> dF_qk <span class="sc">%&gt;%</span> </span>
+<span id="cb9688-3"><a href="resampling-distributions.html#cb9688-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ModelFree_kurt)) <span class="sc">+</span> </span>
+<span id="cb9688-4"><a href="resampling-distributions.html#cb9688-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y=</span>..density..), <span class="at">position=</span><span class="st">&quot;identity&quot;</span>, <span class="at">alpha=</span><span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">&quot;goldenrod&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb9688-5"><a href="resampling-distributions.html#cb9688-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> dF_qk<span class="sc">$</span>V2, <span class="at">y =</span> dF_qk<span class="sc">$</span>V3), <span class="at">color =</span> <span class="st">&quot;violetred4&quot;</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">&quot;Histogram and Gaussian Kernel Density&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb9688-6"><a href="resampling-distributions.html#cb9688-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;Density&quot;</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">&quot;Value&quot;</span>) <span class="sc">+</span></span>
+<span id="cb9688-7"><a href="resampling-distributions.html#cb9688-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">&quot;tomato3&quot;</span>, <span class="st">&quot;khaki3&quot;</span>, <span class="st">&quot;lightsteelblue3&quot;</span>, <span class="st">&quot;dodgerblue4&quot;</span>, <span class="st">&quot;violetred4&quot;</span>)) <span class="sc">+</span> </span>
+<span id="cb9688-8"><a href="resampling-distributions.html#cb9688-8" aria-hidden="true" tabindex="-1"></a><span class="fu">theme</span>(<span class="at">plot.title=</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">14</span>, <span class="at">color=</span><span class="st">&quot;grey26&quot;</span>,</span>
+<span id="cb9688-9"><a href="resampling-distributions.html#cb9688-9" aria-hidden="true" tabindex="-1"></a><span class="at">hjust=</span><span class="fl">0.5</span>,</span>
+<span id="cb9688-10"><a href="resampling-distributions.html#cb9688-10" aria-hidden="true" tabindex="-1"></a><span class="at">lineheight=</span><span class="fl">1.2</span>), <span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill=</span><span class="st">&quot;#f7f7f7&quot;</span>),</span>
+<span id="cb9688-11"><a href="resampling-distributions.html#cb9688-11" aria-hidden="true" tabindex="-1"></a><span class="at">panel.grid.major.y =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="st">&quot;solid&quot;</span>, <span class="at">color =</span> <span class="st">&quot;grey&quot;</span>),</span>
+<span id="cb9688-12"><a href="resampling-distributions.html#cb9688-12" aria-hidden="true" tabindex="-1"></a><span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb9688-13"><a href="resampling-distributions.html#cb9688-13" aria-hidden="true" tabindex="-1"></a><span class="at">panel.grid.major.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb9688-14"><a href="resampling-distributions.html#cb9688-14" aria-hidden="true" tabindex="-1"></a><span class="at">plot.background =</span> <span class="fu">element_rect</span>(<span class="at">fill=</span><span class="st">&quot;#f7f7f7&quot;</span>, <span class="at">color =</span> <span class="st">&quot;#f7f7f7&quot;</span>), <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">color=</span><span class="st">&quot;grey26&quot;</span>, <span class="at">size=</span><span class="dv">12</span>),</span>
+<span id="cb9688-15"><a href="resampling-distributions.html#cb9688-15" aria-hidden="true" tabindex="-1"></a><span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">color=</span><span class="st">&quot;grey26&quot;</span>, <span class="at">size=</span><span class="dv">12</span>),</span>
+<span id="cb9688-16"><a href="resampling-distributions.html#cb9688-16" aria-hidden="true" tabindex="-1"></a><span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">&quot;black&quot;</span>)) </span>
+<span id="cb9688-17"><a href="resampling-distributions.html#cb9688-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9688-18"><a href="resampling-distributions.html#cb9688-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Create DF</span></span>
+<span id="cb9688-19"><a href="resampling-distributions.html#cb9688-19" aria-hidden="true" tabindex="-1"></a>dens_param <span class="ot">&lt;-</span> <span class="fu">density</span>(ModelBased_kurt)</span>
+<span id="cb9688-20"><a href="resampling-distributions.html#cb9688-20" aria-hidden="true" tabindex="-1"></a>dF_qk_param <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">cbind</span>(ModelBased_kurt, dens_param<span class="sc">$</span>x, dens_param<span class="sc">$</span>y))</span></code></pre></div>
+<pre><code>## Warning in base::cbind(...): number of rows of result is not a multiple of vector length (arg 2)</code></pre>
+<div class="sourceCode" id="cb9690"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9690-1"><a href="resampling-distributions.html#cb9690-1" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> dF_qk_param <span class="sc">%&gt;%</span> </span>
+<span id="cb9690-2"><a href="resampling-distributions.html#cb9690-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ModelBased_kurt)) <span class="sc">+</span> </span>
+<span id="cb9690-3"><a href="resampling-distributions.html#cb9690-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y=</span>..density..), <span class="at">position=</span><span class="st">&quot;identity&quot;</span>, <span class="at">alpha=</span><span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">&quot;goldenrod&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb9690-4"><a href="resampling-distributions.html#cb9690-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> dF_qk_param<span class="sc">$</span>V2, <span class="at">y =</span> dF_qk_param<span class="sc">$</span>V3), <span class="at">color =</span> <span class="st">&quot;violetred4&quot;</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">&quot;Histogram and Gaussian Kernel Density&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb9690-5"><a href="resampling-distributions.html#cb9690-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;Density&quot;</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">&quot;Value&quot;</span>) <span class="sc">+</span></span>
+<span id="cb9690-6"><a href="resampling-distributions.html#cb9690-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">&quot;tomato3&quot;</span>, <span class="st">&quot;khaki3&quot;</span>, <span class="st">&quot;lightsteelblue3&quot;</span>, <span class="st">&quot;dodgerblue4&quot;</span>, <span class="st">&quot;violetred4&quot;</span>)) <span class="sc">+</span> </span>
+<span id="cb9690-7"><a href="resampling-distributions.html#cb9690-7" aria-hidden="true" tabindex="-1"></a><span class="fu">theme</span>(<span class="at">plot.title=</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">14</span>, <span class="at">color=</span><span class="st">&quot;grey26&quot;</span>,</span>
+<span id="cb9690-8"><a href="resampling-distributions.html#cb9690-8" aria-hidden="true" tabindex="-1"></a><span class="at">hjust=</span><span class="fl">0.5</span>,</span>
+<span id="cb9690-9"><a href="resampling-distributions.html#cb9690-9" aria-hidden="true" tabindex="-1"></a><span class="at">lineheight=</span><span class="fl">1.2</span>), <span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill=</span><span class="st">&quot;#f7f7f7&quot;</span>),</span>
+<span id="cb9690-10"><a href="resampling-distributions.html#cb9690-10" aria-hidden="true" tabindex="-1"></a><span class="at">panel.grid.major.y =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="st">&quot;solid&quot;</span>, <span class="at">color =</span> <span class="st">&quot;grey&quot;</span>),</span>
+<span id="cb9690-11"><a href="resampling-distributions.html#cb9690-11" aria-hidden="true" tabindex="-1"></a><span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb9690-12"><a href="resampling-distributions.html#cb9690-12" aria-hidden="true" tabindex="-1"></a><span class="at">panel.grid.major.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb9690-13"><a href="resampling-distributions.html#cb9690-13" aria-hidden="true" tabindex="-1"></a><span class="at">plot.background =</span> <span class="fu">element_rect</span>(<span class="at">fill=</span><span class="st">&quot;#f7f7f7&quot;</span>, <span class="at">color =</span> <span class="st">&quot;#f7f7f7&quot;</span>), <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">color=</span><span class="st">&quot;grey26&quot;</span>, <span class="at">size=</span><span class="dv">12</span>),</span>
+<span id="cb9690-14"><a href="resampling-distributions.html#cb9690-14" aria-hidden="true" tabindex="-1"></a><span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">color=</span><span class="st">&quot;grey26&quot;</span>, <span class="at">size=</span><span class="dv">12</span>),</span>
+<span id="cb9690-15"><a href="resampling-distributions.html#cb9690-15" aria-hidden="true" tabindex="-1"></a><span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">&quot;black&quot;</span>)) </span>
+<span id="cb9690-16"><a href="resampling-distributions.html#cb9690-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9690-17"><a href="resampling-distributions.html#cb9690-17" aria-hidden="true" tabindex="-1"></a>a <span class="sc">+</span> b <span class="sc">+</span> <span class="fu">plot_layout</span>(<span class="at">ncol =</span> <span class="dv">1</span>, <span class="at">heights =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">5</span>))</span></code></pre></div>
+<pre><code>## Warning: Use of `dF_qk$V2` is discouraged. Use `V2` instead.</code></pre>
+<pre><code>## Warning: Use of `dF_qk$V3` is discouraged. Use `V3` instead.</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<pre><code>## Warning: Use of `dF_qk_param$V2` is discouraged. Use `V2` instead.</code></pre>
+<pre><code>## Warning: Use of `dF_qk_param$V3` is discouraged. Use `V3` instead.</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-199-1.png" width="672" /></p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="statistical-properties.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="inductive-statistics-and-regression-analysis-fundamentals.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/NikolasAnic/Quantitative-Finance-in-R/edit/master/03-Resampling.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://github.com/NikolasAnic/Quantitative-Finance-in-R/blob/master/03-Resampling.Rmd",
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
